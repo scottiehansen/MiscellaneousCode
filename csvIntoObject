@@ -1,0 +1,47 @@
+var testData = 
+`id, name, description, provider, price\n
+1,123push > consumer > demographic > senior > Age 65+,something,provider,200\n
+2,Alliant > Automotive > Auto - in market new vehicle,other,provider,300\n
+3,Alliant > Automotive > Auto - out of  market new vehicle,other,provider,500\n
+5,Alliant > Automotive > Auto - out of  market newest vehicle,other,provider,500\n
+4,Alliant > Demographic > age 29-30,other,provider,100\n
+6,Alliant > Demographic > age 40-60,other,provider,100`;
+
+var pruneData = function(inputData) {
+    var dataWithoutNewLine = inputData.split('\n');
+    var headings = dataWithoutNewLine.shift();
+    var relevantData = [];
+    var categoriesAndRelevantData = [];
+    var relevantDataIsolated = [];
+    var storedData = {};
+
+    for (var i = 1; i < dataWithoutNewLine.length; i+=2) {
+        relevantData.push(dataWithoutNewLine[i].split(','))
+    }
+
+    for (var i = 0; i < relevantData.length; i++) {
+        relevantDataIsolated.push(relevantData[i][1].split(' > '));
+    }
+    
+    for (var i = 0; i < relevantDataIsolated.length; i++) {
+        if (storedData[relevantDataIsolated[i][0]] === undefined) {
+            storedData[relevantDataIsolated[i][0]] = {};
+        }
+        var currentStore = storedData[relevantDataIsolated[i][0]];
+
+        for (var j = 1; j < relevantDataIsolated[i].length; j++) {
+            if (j < relevantDataIsolated[i].length - 1) {
+                if (currentStore[relevantDataIsolated[i][j]] === undefined) {
+                    currentStore[relevantDataIsolated[i][j]] = {};
+                }
+                currentStore = currentStore[relevantDataIsolated[i][j]];
+            } else {
+                if (currentStore['data'] === undefined) {
+                    currentStore['data'] = [];
+                }
+                currentStore['data'].push(relevantDataIsolated[i][j])
+            }
+         }
+    }
+    console.log(storedData);
+}
